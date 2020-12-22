@@ -3,6 +3,7 @@
   "version": "2.0.0",
   "description": "Quality Assurance 5: American / British English Translator",
   "main": "server.js",
+  "repository": "https://github.com/dvbsknd/FCC-translator",
   "scripts": {
     "dev": "export $(cat .env | xargs) && npx nodemon server.js",
     "test": "export $(cat .env | xargs) && npx mocha --timeout 5000 --require @babel/register --recursive --exit --ui tdd tests/",
@@ -29,6 +30,6 @@
     "eslint-plugin-import": "^2.22.1",
     "eslint-plugin-node": "^11.1.0",
     "eslint-plugin-promise": "^4.2.1"
-  }
+  },
   "license": "MIT"
 }
