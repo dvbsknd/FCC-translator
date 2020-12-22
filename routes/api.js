@@ -1,7 +1,9 @@
-import Translator from '../controllers';
+import Translator from '../controllers/translator.js';
+import HTMLHighlight from '../controllers/highlighter.js';
 
 module.exports = function userRoutes (app) {
   const translator = new Translator();
+  const highlighter = new HTMLHighlight();
 
   app.use((req, res, next) => {
     if (process.env.NODE_ENV === 'development') console.log('[API]', req.method, req.body);
@@ -21,7 +23,8 @@ module.exports = function userRoutes (app) {
     .post((req, res) => {
       try {
         const { text, locale } = req.body;
-        const translation = translator.translate(text, locale);
+        const { result, replacements } = translator.translate(text, locale);
+        const translation = highlighter.highlight(result, replacements);
         res.json({ text, translation });
       } catch (err) {
         res.error(err);

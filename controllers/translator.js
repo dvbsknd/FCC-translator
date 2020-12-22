@@ -8,7 +8,18 @@ export default function Translator () {
 
 Translator.prototype.translate = function (inputText, translationDirection) {
   const dictionary = generateDictionary(translationDirection);
-  return inputText.split(' ').map(word => dictionary[word] || word).join(' ');
+  console.log(dictionary);
+  const lookupWords = Object.keys(dictionary);
+  const replacements = [];
+  let result = inputText;
+  lookupWords.forEach(word => {
+    const regex = new RegExp(word, 'i');
+    if (regex.test(result)) {
+      replacements.push(dictionary[word]);
+      result = result.replace(regex, dictionary[word]);
+    };
+  });
+  return { result, replacements };
 };
 
 export function invertWordMap (wordMap) {
