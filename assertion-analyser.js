@@ -32,9 +32,9 @@ function objParser(str, init) {
   let closeSym = [']', '}', '"', "'", ')'];
   let type;
   let i;
-  for(i = (init || 0); i < str.length; i++ ) {
+  for (i = (init || 0); i < str.length; i++) {
     type = openSym.indexOf(str[i]);
-    if( type !== -1)  break;
+    if (type !== -1) break;
   }
   if (type === -1) return null;
   let open = openSym[type];
@@ -91,7 +91,6 @@ function splitter(str) {
 }
 
 function assertionAnalyser(body) {
-  
   // already filtered in the test runner
   // // remove comments
   // body = body.replace(/\/\/.*\n|\/\*.*\*\//g, '');
@@ -101,10 +100,11 @@ function assertionAnalyser(body) {
   if(!body) return "invalid assertion";
   // replace assertions bodies, so that they cannot
   // contain the word 'assertion'
-
-  let cleanedBody = body.match(/(?:browser\s*\.\s*)?assert\s*\.\s*\w*\([\s\S]*\)/)
-  if(cleanedBody && Array.isArray(cleanedBody)) {
-    body = cleanedBody[0];
+  const cleanedBody = body
+    .match(/(?<=_chai\.)assert(\.|\[")?\w*("\])?\([\s\S]*?\)/g)
+    .map(match => match.replace(/assert\["(\w*)"\]/g, 'assert.$1'));
+  if (cleanedBody && Array.isArray(cleanedBody)) {
+    body = cleanedBody.join('; ');
   } else {
     // No assertions present
     return [];
