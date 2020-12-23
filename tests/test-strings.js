@@ -102,8 +102,32 @@ export const testStrings = [
 ];
 
 export const highlights = [
-  ['Mangoes are my favorite fruit.'],
-  ['I ate yogurt for breakfast.'],
-  ['We watched the footie match for a while.'],
-  ['Paracetamol takes up to an hour to work.'],
+  {
+    input: 'Mangoes are my favorite fruit.',
+    translation: 'Mangoes are my favourite fruit.',
+    direction: 'american-to-british',
+    replacements: [['favorite', 'favourite']],
+    expected: 'Mangoes are my <span class="highlight">favourite</span> fruit.',
+  },
+  {
+    input: 'I ate yogurt for breakfast.',
+    translation: 'I ate yoghurt for breakfast.',
+    direction: 'american-to-british',
+    replacements: [['yogurt', 'yoghurt']],
+    expected: 'I ate <span class="highlight">yoghurt</span> for breakfast.',
+  },
+  {
+    input: 'We watched the footie match for a while.',
+    translation: 'We watched the soccer match for a while.',
+    direction: 'british-to-american',
+    replacements: [['footie', 'soccer']],
+    expected: 'We watched the <span class="highlight">soccer</span> match for a while.',
+  },
+  {
+    input: 'Paracetamol takes up to an hour to work.',
+    translation: 'Tylenol takes up to an hour to work.',
+    direction: 'british-to-american',
+    replacements: [['Paracetamol', 'Tylenol']],
+    expected: '<span class="highlight">Tylenol</span> takes up to an hour to work.',
+  },
 ];

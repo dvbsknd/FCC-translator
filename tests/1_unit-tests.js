@@ -4,10 +4,10 @@ import { testStrings, highlights } from './test-strings.js';
 import chai from 'chai';
 const assert = chai.assert;
 const translator = new Translator();
+const highlighter = new HTMLHighlighter();
 
 suite('Unit Tests', () => {
   suite('HTMLHighlighter', () => {
-    const highlighter = new HTMLHighlighter();
     const string = 'The quick brown fox jumped, yes, over the lazy dog!';
     const expected = 'The <span class="highlight">quick</span> brown fox jumped, yes, over the <span class="highlight">lazy</span> dog!';
 
@@ -35,6 +35,17 @@ suite('Unit Tests', () => {
       test(input, () => {
         const { translation } = translator.translate(input, direction);
         assert.equal(translation, output);
+      });
+    });
+  });
+
+  suite('Highlights', () => {
+    highlights.forEach(testString => {
+      const { input, translation, replacements, expected } = testString;
+      const words = replacements.map(tuple => tuple[1]);
+      test(input, () => {
+        const highlighted = highlighter.highlight(translation, words);
+        assert.equal(highlighted, expected);
       });
     });
   });
