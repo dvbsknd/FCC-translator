@@ -26,7 +26,6 @@ Translator.prototype.translate = function (inputText, translationDirection) {
 };
 
 export function translateSpelling (string, translationDirection) {
-
   const dictionary = generateDictionary(translationDirection);
   const searchTerms = Object.keys(dictionary);
 
@@ -56,7 +55,7 @@ export function convertTime (string, translationDirection) {
   const replacements = [];
   const translation = string.replace(/(\d{1,2})[.:](\d{2})/g, (match, p1, p2) => {
     const replacement = p1 + separators[translationDirection] + p2;
-    replacements.push([ match, replacement ]);
+    replacements.push([match, replacement]);
     return replacement;
   });
   return { translation, replacements };
@@ -78,10 +77,14 @@ export function escapeRegExp (string) {
 };
 
 export function titleCase (string) {
-  return string.charAt(0).toUpperCase() + string.substr(1).toLowerCase();
+  const words = string.split(' ');
+  return words.map(word => word.charAt(0).toUpperCase() +
+    word.substr(1).toLowerCase()).join(' ');
 };
 titleCase.check = function (string) {
-  return /^[A-Z]/.test(string);
+  const words = string.split(' ');
+  const isTitleCase = words.every(word => /^[A-Z]/.test(word));
+  return isTitleCase;
 };
 
 export function invertWordMap (wordMap) {
