@@ -96,12 +96,11 @@ function assertionAnalyser(body) {
   // body = body.replace(/\/\/.*\n|\/\*.*\*\//g, '');
   // // get test function body
   // body = body.match(/\{\s*([\s\S]*)\}\s*$/)[1];
-  
   if(!body) return "invalid assertion";
   // replace assertions bodies, so that they cannot
   // contain the word 'assertion'
   const cleanedBody = body
-    .match(/(?<=_chai\.)assert(\.|\[")?\w*("\])?\([\s\S]*?\)/g)
+    .match(/assert(\.|\[")?\w*("\])?\([\s\S]*?\)/g)
     .map(match => match.replace(/assert\["(\w*)"\]/g, 'assert.$1'));
   if (cleanedBody && Array.isArray(cleanedBody)) {
     body = cleanedBody.join('; ');
