@@ -6,12 +6,33 @@ import britishOnly from './dictionaries/british-only';
 export default function Translator () {};
 
 Translator.prototype.translate = function (inputText, translationDirection) {
+  if (inputText === '') throw new Error('No text to translate');
+  if (!inputText || !translationDirection) throw new Error('Required field(s) missing');
+
+  const {
+    translation: spellingTranslation,
+    replacements: spellingReplacements
+  } = translateSpelling(inputText, translationDirection);
+
+  const {
+    translation,
+    replacements: timeReplacements
+  } = convertTime(spellingTranslation, translationDirection);
+
+  return {
+    translation,
+    replacements: [...spellingReplacements, ...timeReplacements]
+  };
+};
+
+export function translateSpelling (string, translationDirection) {
+
   const dictionary = generateDictionary(translationDirection);
   const searchTerms = Object.keys(dictionary);
 
   const replaceables = searchTerms.reduce((acc, curr) => {
     const caseInsensitiveRegex = new RegExp(escapeRegExp(curr), 'ig');
-    const matches = inputText.match(caseInsensitiveRegex);
+    const matches = string.match(caseInsensitiveRegex);
     if (matches) return acc.concat(matches);
     else return acc;
   }, []);
@@ -23,7 +44,21 @@ Translator.prototype.translate = function (inputText, translationDirection) {
     return [word, replacement];
   });
 
-  const translation = replace(inputText, replacements);
+  const translation = replace(string, replacements);
+  return { translation, replacements };
+};
+
+export function convertTime (string, translationDirection) {
+  const separators = {
+    'american-to-british': '.',
+    'british-to-american': ':',
+  };
+  const replacements = [];
+  const translation = string.replace(/(\d{1,2})[.:](\d{2})/g, (match, p1, p2) => {
+    const replacement = p1 + separators[translationDirection] + p2;
+    replacements.push([ match, replacement ]);
+    return replacement;
+  });
   return { translation, replacements };
 };
 
@@ -39,7 +74,7 @@ export function replace (string, replacements) {
 };
 
 export function escapeRegExp (string) {
-  return `\\b${string.replace(/[.*+?^${}()|[\]\\]/g, '\\$&')}(?=\\b|\\s)`;
+  return `\\b${string.replace(/\.$/g, '\\$&')}(?=\\b|\\s)`;
 };
 
 export function titleCase (string) {
@@ -68,5 +103,5 @@ export function generateDictionary (translationDirection) {
       invertWordMap(americanToBritishSpelling),
       invertWordMap(americanToBritishTitles),
       britishOnly);
-  } else throw new Error('Invalid translation direction');
+  } else throw new Error('Invalid value for locale field');
 };

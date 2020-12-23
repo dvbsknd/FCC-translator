@@ -1,7 +1,6 @@
 export default function HTMLHighlight () {};
 
-HTMLHighlight.prototype.highlight = function (string, replacements) {
-  const words = replacements.map(tuple => tuple[1]);
+HTMLHighlight.prototype.highlight = function (string, words) {
   let highlighted = string;
   words.forEach(word => {
     const regex = new RegExp(word);

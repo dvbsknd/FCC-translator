@@ -24,9 +24,11 @@ module.exports = function userRoutes (app) {
       try {
         const { text, locale } = req.body;
         const { translation: rawTranslation, replacements } = translator.translate(text, locale);
-        const translation = highlighter.highlight(rawTranslation, replacements);
+        const highlightWords = replacements.map(tuple => tuple[1]);
+        const translation = highlighter.highlight(rawTranslation, highlightWords);
         console.log('[API] Response', { text, replacements, translation });
-        res.json({ text, translation });
+        if (translation !== text) res.json({ text, translation });
+        else res.json({ text, translation: 'Everything looks good to me!' });
       } catch (err) {
         res.error(err);
       };
