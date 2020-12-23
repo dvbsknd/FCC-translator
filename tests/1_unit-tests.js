@@ -1,9 +1,9 @@
 import HTMLHighlighter from '../controllers/highlighter';
-import { convertTime } from '../controllers/translator';
-const chai = require('chai');
+import Translator, { convertTime } from '../controllers/translator';
+import { testStrings, highlights } from './test-strings.js';
+import chai from 'chai';
 const assert = chai.assert;
-
-// const Translator = require('../controllers/translator.js');
+const translator = new Translator();
 
 suite('Unit Tests', () => {
   suite('HTMLHighlighter', () => {
@@ -25,7 +25,17 @@ suite('Unit Tests', () => {
 
     test('Formats the time in a string from British to American', () => {
       const result = convertTime(string, direction);
-      assert.equal(result, expected);
+      assert.equal(result.translation, expected);
+    });
+  });
+
+  suite('Translations', () => {
+    testStrings.forEach(testString => {
+      const { input, direction, output } = testString;
+      test(input, () => {
+        const { translation } = translator.translate(input, direction);
+        assert.equal(translation, output);
+      });
     });
   });
 });
