@@ -23,8 +23,9 @@ module.exports = function userRoutes (app) {
     .post((req, res) => {
       try {
         const { text, locale } = req.body;
-        const { result, replacements } = translator.translate(text, locale);
-        const translation = highlighter.highlight(result, replacements);
+        const { translation: rawTranslation, replacements } = translator.translate(text, locale);
+        const translation = highlighter.highlight(rawTranslation, replacements);
+        console.log('[API] Response', { text, replacements, translation });
         res.json({ text, translation });
       } catch (err) {
         res.error(err);
